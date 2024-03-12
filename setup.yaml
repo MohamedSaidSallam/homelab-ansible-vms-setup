@@ -1,0 +1,7 @@
+---
+- name: Setup
+  hosts: target
+  become: false
+  gather_facts: false
+  roles:
+    - role: apt

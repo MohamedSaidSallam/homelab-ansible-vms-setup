@@ -1,0 +1,10 @@
+deb {{ proxy_url }} {{ distribution }} main restricted
+deb {{ proxy_url }} {{ distribution }}-updates main restricted
+deb {{ proxy_url }} {{ distribution }} universe
+deb {{ proxy_url }} {{ distribution }}-updates universe
+deb {{ proxy_url }} {{ distribution }} multiverse
+deb {{ proxy_url }} {{ distribution }}-updates multiverse
+deb {{ proxy_url }} {{ distribution }}-backports main restricted universe multiverse
+deb {{ proxy_url }} {{ distribution }}-security main restricted
+deb {{ proxy_url }} {{ distribution }}-security universe
+deb {{ proxy_url }} {{ distribution }}-security multiverse

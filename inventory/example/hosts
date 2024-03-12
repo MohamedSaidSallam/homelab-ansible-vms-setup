@@ -1,0 +1,2 @@
+[target]
+100.100.100.100 ansible_user=user

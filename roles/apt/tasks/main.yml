@@ -1,0 +1,70 @@
+---
+- name: Collect only facts returned by facter
+  ansible.builtin.setup:
+    gather_subset:
+      - "distribution_release"
+
+- name: Fail if distribution is not Ubuntu
+  ansible.builtin.fail:
+    msg: Playbook only supports configuring Ubuntu machines.
+  when: ansible_facts["distribution"]!="Ubuntu"
+
+- name: Comment out default source
+  become: true
+  ansible.builtin.replace:
+    path: /etc/apt/sources.list
+    regexp: "^(deb)"
+    replace: '# \1'
+    backup: true
+
+- name: Template Nexus source file
+  become: true
+  vars:
+    distribution: "{{ ansible_facts['distribution_release'] }}"
+  ansible.builtin.template:
+    src: nexus.source.list.j2
+    dest: /etc/apt/sources.list.d/nexus.source.list
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Add Nexus auth for apt
+  become: true
+  ansible.builtin.blockinfile:
+    path: /etc/apt/auth.conf.d/nexus.conf
+    block: |
+      machine {{ proxy_host }}
+      login {{ nexus_vm_user }}
+      password {{ nexus_vm_pass }}
+    create: true
+    backup: true
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Get apt metadata directory info
+  ansible.builtin.file:
+    path: /var/lib/apt/lists/
+    recurse: no
+  register: apt_metadata_dir
+
+- name: Clear apt metadata directory
+  become: true
+  ansible.builtin.file:
+    path: /var/lib/apt/lists/
+    state: absent
+
+- name: Recreate apt metadata directory
+  become: true
+  ansible.builtin.file:
+    path: /var/lib/apt/lists/
+    state: directory
+    owner: "{{ apt_metadata_dir['owner'] }}"
+    group: "{{ apt_metadata_dir['group'] }}"
+    mode: "{{ apt_metadata_dir['mode'] }}"
+
+- name: Confirm apt config is valid
+  become: true
+  ansible.builtin.apt:
+    update_cache: yes
+  changed_when: false
