@@ -1,2 +1,2 @@
-proxy_host: nexus.homelab.example.com
+proxy_host: nexus.homelab.mohamedsaidsallam.work
 proxy_url: https://{{ proxy_host }}/repository/apt-proxy
