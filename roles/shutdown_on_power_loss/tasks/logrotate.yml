@@ -1,0 +1,33 @@
+---
+
+- name: Template logrotate conf
+  ansible.builtin.template:
+    src: log-rotate.j2
+    dest: "{{ logrotate_conf_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Validate logrotate conf
+  block:
+    - name: Validate logrotate conf
+      ansible.builtin.shell: "logrotate -d {{ logrotate_conf_path }}"
+      changed_when: false
+  rescue:
+    - name: Slurp templated logrotate conf
+      ansible.builtin.slurp:
+        src: "{{ logrotate_conf_path }}"
+      register: logrotate_conf
+
+    - name: View logrotate_conf
+      ansible.builtin.debug:
+        msg: "{{ logrotate_conf['content'] | b64decode }}"
+
+    - name: Delete logrotate conf
+      ansible.builtin.file:
+        path: "{{ logrotate_conf_path }}"
+        state: absent
+
+    - name: Fail playbook
+      ansible.builtin.fail:
+        msg: logrotate failed to validate

@@ -1,6 +1,6 @@
 ---
-- name: Setup
-  hosts: target
+- name: Setup-VMs
+  hosts: vms
   become: false
   gather_facts: false
   roles:

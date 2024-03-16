@@ -1,0 +1,19 @@
+---
+- name: Set aliases fact
+  ansible.builtin.set_fact:
+    shutdown_power_loss_aliases: "{{ (shutdown_power_loss_aliases | default('')) }}\nalias {{ item.alias_name }}='{{ power_loss_scripts_path }}/{{ item.script }}'"
+  with_items:
+    - alias_name: shutdown-opl-set-flags
+      script: "{{ power_loss_script_set }}"
+    - alias_name: shutdown-opl-reset-flags
+      script: "{{ power_loss_script_reset }}"
+    - alias_name: shutdown-opl-view-flags
+      script: "{{ power_loss_script_view }}"
+
+- name: Setup reset/clear flags aliases
+  ansible.builtin.blockinfile:
+    path: "~/.bashrc"
+    backup: true
+    create: true
+    block: "{{ shutdown_power_loss_aliases }}"
+    validate: /bin/bash -n %s

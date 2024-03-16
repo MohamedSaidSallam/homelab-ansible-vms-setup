@@ -1,0 +1,36 @@
+---
+- name: Create script directory
+  ansible.builtin.file:
+    path: "{{ power_loss_scripts_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Template script files
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "{{ power_loss_scripts_path }}/{{ item }}"
+    owner: root
+    group: root
+    mode: "0755"
+    backup: true
+  with_items: "{{ power_loss_scripts }}"
+
+- name: Change line endings to unix
+  ansible.builtin.replace:
+    path: "{{ power_loss_scripts_path }}/{{ item }}"
+    regexp: "\r"
+    replace: ""
+  with_items: "{{ power_loss_scripts }}"
+
+- name: Shutdown on power loss cronjob
+  ansible.builtin.cron:
+    name: "shutdown on power loss"
+    minute: "{{ power_loss_cronjob.minute }}"
+    hour: "{{ power_loss_cronjob.hour }}"
+    day: "{{ power_loss_cronjob.day }}"
+    month: "{{ power_loss_cronjob.month }}"
+    weekday: "{{ power_loss_cronjob.weekday }}"
+    job: "{{ power_loss_scripts_path }}/{{ power_loss_script_shutdown }} >> {{ power_loss_script_cron_log_path }} 2>&1"
+    backup: true

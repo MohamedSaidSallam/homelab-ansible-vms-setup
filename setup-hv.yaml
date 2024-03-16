@@ -1,0 +1,7 @@
+---
+- name: Setup-Hypervisor
+  hosts: hypervisor
+  become: false
+  gather_facts: false
+  roles:
+    - role: shutdown_on_power_loss

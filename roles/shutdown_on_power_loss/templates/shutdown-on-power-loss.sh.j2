@@ -1,0 +1,31 @@
+#!/bin/bash
+
+source {{ power_loss_script_flags_path }}
+
+ROUTER_IP="{{ router_ip }}"
+
+echo "-----------------START $(date)-----------------"
+
+echo "Pinging $ROUTER_IP"
+ping -c {{ ping_attempts }} "$ROUTER_IP" > /dev/null
+
+PING_CODE=$?
+
+echo "Ping Code: $PING_CODE. Was Used Flag: $(ls $WAS_USED)"
+
+if [ -z "$WAS_USED" ]; then
+    exit 1
+fi
+
+if [ $PING_CODE -ne 0  ] && [ ! -f "$WAS_USED" ]
+then
+    echo "Setting was used ($WAS_USED)"
+    touch "$WAS_USED"
+
+    echo "Shutting down"
+    /sbin/shutdown -h now
+else
+    echo "NOT shutting down"
+fi
+
+echo "-----------------END $(date)-----------------"

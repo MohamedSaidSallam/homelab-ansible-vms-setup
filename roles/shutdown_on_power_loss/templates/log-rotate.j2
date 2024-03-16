@@ -1,0 +1,11 @@
+
+{{ power_loss_script_cron_log_path }} {
+    daily
+    minsize 10M
+    rotate 7
+    compress
+    missingok
+    notifempty
+    copytruncate
+    create 644 root root
+}

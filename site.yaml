@@ -1,2 +1,3 @@
 ---
-- ansible.builtin.import_playbook: setup.yaml
+- ansible.builtin.import_playbook: setup-hv.yaml
+- ansible.builtin.import_playbook: setup-vms.yaml

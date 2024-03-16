@@ -1,0 +1,9 @@
+#!/bin/bash
+
+source {{ power_loss_script_flags_path }}
+
+if [ -f "$WAS_USED" ]; then
+    ls -al "$WAS_USED"
+else
+    echo "Flag not set (${WAS_USED})"
+fi
