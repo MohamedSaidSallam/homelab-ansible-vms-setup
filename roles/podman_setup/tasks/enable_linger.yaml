@@ -1,0 +1,16 @@
+---
+- name: Gather User facts
+  ansible.builtin.setup:
+    gather_subset:
+      - 'user_id'
+
+- name: Check linger status
+  become: true
+  ansible.builtin.shell: "loginctl show-user {{ ansible_facts.user_uid }} | grep -i Linger | cut -d '=' -f2"
+  changed_when: false
+  register: linger_status
+
+- name: Enable linger if not enabled
+  become: true
+  ansible.builtin.shell: "loginctl enable-linger {{ ansible_facts.user_uid }}"
+  when: linger_status.stdout != 'yes'

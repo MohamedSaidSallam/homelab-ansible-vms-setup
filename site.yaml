@@ -1,3 +1,5 @@
 ---
 - ansible.builtin.import_playbook: setup-hv.yaml
 - ansible.builtin.import_playbook: setup-vms.yaml
+- ansible.builtin.import_playbook: setup-podman.yaml
+- ansible.builtin.import_playbook: setup-jellyfin.yaml

@@ -1,0 +1,14 @@
+---
+- name: Collect only facts returned by facter
+  ansible.builtin.setup:
+    gather_subset:
+      - "distribution_release"
+
+- name: Fail if ubuntu version is too old
+  ansible.builtin.fail:
+    msg: "Ubuntu version ({{ ansible_facts.distribution_version }}) is too old for podman"
+  when: ansible_facts.distribution_version is version('22.04', 'lt')
+
+- name: Confirm cgroup version is 2
+  ansible.builtin.shell: "grep -E 'cgroup2$' /proc/filesystems"
+  changed_when: false

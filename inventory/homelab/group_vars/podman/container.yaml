@@ -1,0 +1,4 @@
+update_podman: false
+install_podman_update_cache: true
+
+persist_podman_login: true

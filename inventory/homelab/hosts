@@ -1,5 +1,17 @@
-[vms]
-192.168.1.163 ansible_user=apt-nexus # testing
-
 [hypervisor]
-192.168.1.190 ansible_user=root
+proxmox
+
+[vms]
+apt-nexus  # testing
+
+[vms:children]
+jellyfin
+
+[jellyfin]
+jellyfin_vm
+
+[podman:children]
+jellyfin
+
+[smb_clients:children]
+jellyfin

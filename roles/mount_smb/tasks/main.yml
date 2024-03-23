@@ -1,0 +1,16 @@
+---
+- name: Create SMB mount point
+  become: true
+  ansible.builtin.file:
+    state: directory
+    path: "{{ smb_mnt_path }}"
+
+- name: Mount SMB
+  become: true
+  ansible.posix.mount:
+    path: "{{ smb_mnt_path }}"
+    src: "{{ smb_url }}"
+    fstype: cifs
+    opts: "ro,nofail,username={{ smb_username }},password={{ smb_password }}"
+    state: present
+    backup: true

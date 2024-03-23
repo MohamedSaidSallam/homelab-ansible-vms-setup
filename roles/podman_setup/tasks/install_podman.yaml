@@ -1,0 +1,7 @@
+---
+- name: Install podman
+  become: true
+  ansible.builtin.apt:
+    name: podman
+    state: "{{ 'latest' if update_podman else 'present' }}"
+    update_cache: "{{ install_podman_update_cache }}"

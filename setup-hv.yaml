@@ -1,5 +1,5 @@
 ---
-- name: Setup-Hypervisor
+- name: Setup Hypervisor
   hosts: hypervisor
   become: false
   gather_facts: false

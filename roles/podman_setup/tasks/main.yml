@@ -1,0 +1,5 @@
+---
+- import_tasks: pre_checks.yaml
+- import_tasks: install_podman.yaml
+- import_tasks: enable_linger.yaml
+- import_tasks: podman_login.yaml

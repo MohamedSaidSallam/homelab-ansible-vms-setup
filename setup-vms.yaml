@@ -1,5 +1,5 @@
 ---
-- name: Setup-VMs
+- name: Setup VMs
   hosts: vms
   become: false
   gather_facts: false

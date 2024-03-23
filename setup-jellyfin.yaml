@@ -1,0 +1,13 @@
+---
+- name: Setup Jellyfin
+  hosts: jellyfin
+  become: false
+  gather_facts: false
+  roles:
+    - role: mount_smb
+      vars:
+        smb_mnt_path: "{{ jellyfin_smb_mnt_path }}"
+        smb_url: "{{ truenas_smb_url }}"
+        smb_username: "{{ truenas_smb_username }}"
+        smb_password: "{{ truenas_smb_password }}"
+    - role: jellyfin_container

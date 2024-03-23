@@ -1,0 +1,7 @@
+---
+- name: Setup Podman
+  hosts: podman
+  become: false
+  gather_facts: false
+  roles:
+    - role: podman_setup

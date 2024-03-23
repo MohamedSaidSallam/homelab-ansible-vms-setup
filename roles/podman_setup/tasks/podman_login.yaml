@@ -1,0 +1,7 @@
+---
+- name: Login to {{ docker_private_registry }}
+  containers.podman.podman_login:
+    username: "{{ nexus_docker_username }}"
+    password: "{{ nexus_docker_password }}"
+    registry: "{{ docker_private_registry }}"
+    authfile: "{{ '$HOME/.docker/config.json' if persist_podman_login else omit }}"
