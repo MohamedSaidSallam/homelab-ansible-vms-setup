@@ -53,6 +53,7 @@
   ansible.builtin.file:
     path: /var/lib/apt/lists/
     state: absent
+  changed_when: false
 
 - name: Recreate apt metadata directory
   become: true
@@ -62,6 +63,7 @@
     owner: "{{ apt_metadata_dir['owner'] }}"
     group: "{{ apt_metadata_dir['group'] }}"
     mode: "{{ apt_metadata_dir['mode'] }}"
+  changed_when: false
 
 - name: Confirm apt config is valid
   become: true
