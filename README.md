@@ -10,18 +10,24 @@
 ### Run everything
 
 ```sh
-ansible-playbook -i inventory/homelab/ --vault-password-file vault_pass site.yaml
+ansible-playbook vault_pass site.yaml
 ```
 
 ### Run specific playbook
 
+example
+
 ```sh
-ansible-playbook -i inventory/homelab/ --vault-password-file vault_pass setup-vms.yaml
+ansible-playbook vault_pass setup-vms.yaml
 ```
 
 ```sh
-ansible-playbook -i inventory/homelab/ --vault-password-file vault_pass setup-hv.yaml
+ansible-playbook vault_pass setup-hv.yaml
 ```
+
+## Configuration
+
+[ansible.cfg](ansible.cfg)
 
 ## Vault
 
