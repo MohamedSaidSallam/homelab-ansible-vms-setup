@@ -7,11 +7,18 @@ apt-nexus  # testing
 [vms:children]
 jellyfin
 
+[support]
+syranth
+
 [jellyfin]
 jellyfin_vm
 
 [podman:children]
 jellyfin
+support
 
 [smb_clients:children]
 jellyfin
+
+[syncthing:children]
+support

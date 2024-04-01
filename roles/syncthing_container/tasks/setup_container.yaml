@@ -1,0 +1,26 @@
+---
+- name: Run Syncthing container
+  containers.podman.podman_container:
+    name: "{{ syncthing_container.name }}"
+    image: "{{ docker_private_registry }}/{{ syncthing_container.image.name }}:{{ syncthing_container.image.version }}"
+    state: created
+    network: "{{ syncthing_container.network }}"
+    hostname: "{{ syncthing_container.hostname }}"
+    volume: "{{ syncthing_container.volumes }}"
+    env: "{{ syncthing_container.env }}"
+    generate_systemd:
+      path: "{{ systemctl_path }}"
+      restart_policy: always
+      stop_timeout: 120
+      names: true
+      container_prefix: "{{ systemctl_container_prefix }}"
+      new: true
+  register: syncthing_container_create_result
+
+- name: Reload systemctl daemon and start and enable container
+  ansible.builtin.systemd_service:
+    name: "{{ systemctl_container_prefix }}-{{ syncthing_container.name }}"
+    state: "{{ 'restarted' if syncthing_container_create_result.changed  else 'started' }}"
+    enabled: true
+    scope: user
+    daemon_reload: true

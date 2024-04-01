@@ -1,0 +1,7 @@
+---
+- name: Setup Syncthing
+  hosts: syncthing
+  become: false
+  gather_facts: false
+  roles:
+    - role: syncthing_container

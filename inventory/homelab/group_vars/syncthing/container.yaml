@@ -1,0 +1,22 @@
+systemctl_path: ~/.config/systemd/user/
+systemctl_container_prefix: container
+
+GUI_PORT: 18384
+
+syncthing_container:
+  name: syncthing
+  image:
+    name: syncthing/syncthing
+    version: "1.27"
+  network: host
+  # or
+  # ports: # and configure IPs in syncthing setting to avoid poor performance
+  #   - "{{ GUI_PORT }}:{{ GUI_PORT }}"
+  #   - 22000:22000/tcp
+  #   - 22000:22000/udp
+  #   - 21027:21027/udp
+  hostname: syranth-syncthing
+  volumes:
+    - syncthing-data:/var/syncthing:Z
+  env:
+    STGUIADDRESS: "0.0.0.0:{{ GUI_PORT }}"
