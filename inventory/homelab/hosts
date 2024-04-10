@@ -1,9 +1,6 @@
 [hypervisor]
 proxmox
 
-[vms]
-apt-nexus  # testing
-
 [vms:children]
 jellyfin
 support
