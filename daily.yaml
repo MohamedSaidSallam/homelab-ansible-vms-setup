@@ -1,0 +1,8 @@
+---
+- name: Daily VMs
+  hosts: vms
+  become: false
+  gather_facts: false
+  roles:
+    - role: update_packages
+
