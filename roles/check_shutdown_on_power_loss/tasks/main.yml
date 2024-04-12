@@ -1,0 +1,40 @@
+---
+- name: Check if flag is present
+  stat:
+    path: "{{ power_loss_flag_path }}"
+  register: flag_results
+
+- name: Get list of VMs with flag
+  vars:
+    value: "{{ hostvars[item] }}"
+  ansible.builtin.set_fact:
+    vms_with_flag: "{{ vms_with_flag | default([]) + [item]}}"
+  loop: "{{ hostvars.keys() }}"
+  when:
+    - value.flag_results.failed is defined
+    - not value.flag_results.failed
+    - value.flag_results.stat.exists
+  delegate_to: localhost
+  run_once: true
+
+- name: Notify if flag is present
+  community.general.discord:
+    webhook_id: "{{ webhook_id }}"
+    webhook_token: "{{ webhook_token }}"
+    username: "Ansible: was_used flag found"
+    avatar_url: https://i.imgur.com/Z4tUwsx.png # Ansible Logo (White)
+    embeds:
+      - title: "HVs Have `was_used` Flag!!"
+        color: "{{ '0xE85810' | int(base=16) }}"
+        image:
+          url: "https://i.imgur.com/cWdaqPl.png" # Flag Icon (white)
+        fields:
+          - name: "The following HVs have `shut_down_on_power_loss`'s `was_used` flag:"
+            value: "{{ vms_with_flag | map('upper') | map('regex_replace', '^(.*)$', '- \\1') | join('\n') }}"
+        footer:
+          text: "Automatic Run"
+  delegate_to: localhost
+  run_once: true
+  when:
+    - vms_with_flag is defined
+
