@@ -19,7 +19,7 @@
     volume:
       - jellyfin-cache:/cache:Z
       - jellyfin-config:/config:Z
-      - "{{ jellyfin_smb_mnt_path }}:/media/truenas,ro=true,relabel=private"
+      - "{{ jellyfin_smb_mnt_wrapper_path }}:/media/truenas,ro=true,relabel=private"
     generate_systemd:
       path: ~/.config/systemd/user/
       restart_policy: always
@@ -27,11 +27,12 @@
       names: true
       container_prefix: "{{ systemctl_container_prefix }}"
       new: true
+  register: jellyfin_container_create_result
 
 - name: Reload systemctl daemon and start and enable container
   ansible.builtin.systemd_service:
     name: "{{ systemctl_container_prefix }}-{{ jellyfin_container_name }}"
-    state: started
+    state: "{{ 'restarted' if jellyfin_container_create_result.changed  else 'started' }}"
     enabled: true
     scope: user
     daemon_reload: true

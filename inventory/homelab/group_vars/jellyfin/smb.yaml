@@ -1,1 +1,2 @@
-jellyfin_smb_mnt_path: /mnt/truenas
+jellyfin_smb_mnt_wrapper_path: /mnt/truenas-wrapper
+jellyfin_smb_mnt_path: "{{ jellyfin_smb_mnt_wrapper_path }}/truenas"

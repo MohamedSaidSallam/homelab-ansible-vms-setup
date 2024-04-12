@@ -12,5 +12,5 @@
     src: "{{ smb_url }}"
     fstype: cifs
     opts: "ro,nofail,username={{ smb_username }},password={{ smb_password }}"
-    state: present
+    state: mounted
     backup: true
