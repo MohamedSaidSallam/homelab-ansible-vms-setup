@@ -28,8 +28,8 @@
 
 - name: Notify if restart is needed
   community.general.discord:
-    webhook_id: "{{ webhook_id }}"
-    webhook_token: "{{ webhook_token }}"
+    webhook_id: "{{ discord_homelab_webhook.id }}"
+    webhook_token: "{{ discord_homelab_webhook.token }}"
     username: "Ansible: Pending Reboot Alert"
     avatar_url: https://i.imgur.com/Z4tUwsx.png # Ansible Logo (White)
     embeds:
