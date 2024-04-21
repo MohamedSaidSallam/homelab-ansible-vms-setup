@@ -25,7 +25,7 @@
     avatar_url: https://i.imgur.com/Z4tUwsx.png # Ansible Logo (White)
     embeds:
       - title: "HVs Have `was_used` Flag!!"
-        color: "{{ '0xE85810' | int(base=16) }}"
+        color: "{{ discord_colors.warning }}"
         image:
           url: "https://i.imgur.com/cWdaqPl.png" # Flag Icon (white)
         fields:

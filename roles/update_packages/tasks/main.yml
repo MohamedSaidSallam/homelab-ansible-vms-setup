@@ -34,7 +34,7 @@
     avatar_url: https://i.imgur.com/Z4tUwsx.png # Ansible Logo (White)
     embeds:
       - title: "VMs Need Restarting!!"
-        color: "{{ '0xDBA50F' | int(base=16) }}"
+        color: "{{ discord_colors.minor }}"
         image:
           url: "https://i.imgur.com/fI2hS6r.png" # Restart Icon (white)
         fields:

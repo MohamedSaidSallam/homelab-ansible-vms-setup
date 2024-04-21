@@ -1,0 +1,5 @@
+discord_colors:
+  ok: "{{ '0x32A852' | int(base=16) }}"
+  minor: "{{ '0xDBA50F' | int(base=16) }}"
+  warning: "{{ '0xE85810' | int(base=16) }}"
+  danger: "{{ '0xE30B0B' | int(base=16) }}"
