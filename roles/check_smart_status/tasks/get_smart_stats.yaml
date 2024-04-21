@@ -18,10 +18,10 @@
     webhook_id: "{{ discord_homelab_smart_webhook.id }}"
     webhook_token: "{{ discord_homelab_smart_webhook.token }}"
     username: "Ansible: Smart Stats"
-    avatar_url: https://i.imgur.com/Z4tUwsx.png # Ansible Logo (White)
+    avatar_url: "{{ discord.images.ansible_logo_white }}"
     embeds:
       - title: "Smart Stats ({{ item.name }}) {{ 'FAILED!!!' if failing_disk }}"
-        color: "{{ discord_colors.danger if failing_disk else discord_colors.ok }}"
+        color: "{{ discord.colors.danger if failing_disk else discord.colors.ok }}"
         image:
           url: "https://i.imgur.com/BPC0upW.png" # Disk Icon (white)
         description: "```{{ smart_stats_results.stdout }}```"

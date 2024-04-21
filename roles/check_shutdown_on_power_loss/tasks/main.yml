@@ -22,10 +22,10 @@
     webhook_id: "{{ discord_homelab_webhook.id }}"
     webhook_token: "{{ discord_homelab_webhook.token }}"
     username: "Ansible: was_used flag found"
-    avatar_url: https://i.imgur.com/Z4tUwsx.png # Ansible Logo (White)
+    avatar_url: "{{ discord.images.ansible_logo_white }}"
     embeds:
       - title: "HVs Have `was_used` Flag!!"
-        color: "{{ discord_colors.warning }}"
+        color: "{{ discord.colors.warning }}"
         image:
           url: "https://i.imgur.com/cWdaqPl.png" # Flag Icon (white)
         fields:
