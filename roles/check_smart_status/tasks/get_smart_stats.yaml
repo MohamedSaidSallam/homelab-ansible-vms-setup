@@ -1,0 +1,31 @@
+---
+- name: Get smart stats
+  ansible.builtin.shell: "smartctl {{ item.extra_smart_params }} -A {{ item.dev }}"
+  register: smart_stats_results
+  changed_when: false
+
+- name: Check drive health
+  ansible.builtin.shell: "smartctl -H {{ item.dev }}"
+  register: smart_health_results
+  changed_when: false
+
+- name: Check if disk passed
+  set_fact:
+    failing_disk: "{{ 'PASSED' not in smart_health_results.stdout }}"
+
+- name: Notify with stats
+  community.general.discord:
+    webhook_id: "{{ discord_homelab_smart_webhook.id }}"
+    webhook_token: "{{ discord_homelab_smart_webhook.token }}"
+    username: "Ansible: Smart Stats"
+    avatar_url: https://i.imgur.com/Z4tUwsx.png # Ansible Logo (White)
+    embeds:
+      - title: "Smart Stats ({{ item.name }}) {{ 'FAILED!!!' if failing_disk }}"
+        color: "{{ discord_colors.danger if failing_disk else discord_colors.ok }}"
+        image:
+          url: "https://i.imgur.com/BPC0upW.png" # Disk Icon (white)
+        description: "```{{ smart_stats_results.stdout }}```"
+        footer:
+          text: "Automatic Run"
+  delegate_to: localhost
+  when: always_notify or failing_disk

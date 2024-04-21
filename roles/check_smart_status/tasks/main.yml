@@ -1,0 +1,12 @@
+---
+- name: Install smartmontools
+  become: true
+  ansible.builtin.apt:
+    name: smartmontools
+    state: present
+
+- name: Get smart stats for each disk
+  include_tasks: get_smart_stats.yaml
+  loop: "{{ smart_disks }}"
+  loop_control:
+    label: "{{ item.name }}"

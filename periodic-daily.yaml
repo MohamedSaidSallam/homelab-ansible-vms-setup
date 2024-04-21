@@ -1,4 +1,6 @@
 ---
+# 0 4 * * *
+
 - name: Daily VMs
   hosts: vms
   become: false
@@ -12,3 +14,6 @@
   gather_facts: false
   roles:
     - role: check_shutdown_on_power_loss
+    - role: check_smart_status
+      vars:
+        always_notify: false
