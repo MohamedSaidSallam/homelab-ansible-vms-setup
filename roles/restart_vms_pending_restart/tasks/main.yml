@@ -1,0 +1,11 @@
+---
+- name: Check if restart is needed
+  stat:
+    path: /var/run/reboot-required
+  register: reboot_flag_results
+
+- name: Reboot machines pending reboot
+  become: true
+  ansible.builtin.reboot:
+    msg: "Rebooting machine to apply updates"
+  when: reboot_flag_results.stat.exists

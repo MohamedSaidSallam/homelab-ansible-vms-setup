@@ -1,0 +1,7 @@
+---
+- name: Restart VMs Pending Restart
+  hosts: vms
+  become: false
+  gather_facts: false
+  roles:
+    - role: restart_vms_pending_restart
