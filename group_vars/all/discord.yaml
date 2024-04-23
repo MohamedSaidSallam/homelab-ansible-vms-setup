@@ -1,3 +1,4 @@
+---
 discord:
   colors:
     ok: "{{ '0x32A852' | int(base=16) }}"

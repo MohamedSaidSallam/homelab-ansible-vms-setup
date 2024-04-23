@@ -1,0 +1,15 @@
+---
+# https://crontab.guru/#0_6_2_*/4_*
+# 0 6 2 */4 *
+
+- name: Daily Hypervisor
+  hosts: hypervisor
+  become: false
+  gather_facts: false
+  roles:
+    - role: run_smart_test
+      vars:
+        test_type: "{{ smart_test_types.long }}"
+    - role: check_smart_status
+      vars:
+        always_notify: true

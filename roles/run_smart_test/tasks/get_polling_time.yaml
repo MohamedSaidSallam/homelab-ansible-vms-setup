@@ -1,0 +1,15 @@
+---
+- name: Get capabilities of {{ disk.name }}
+  ansible.builtin.shell: "smartctl -c {{ disk.dev }}"
+  changed_when: false
+  register: smart_capabilities_results
+
+- name: Set fact with polling time
+  ansible.builtin.set_fact:
+    polling_time_text: "{{ smart_capabilities_results.stdout | regex_search(test_type.poll_name + '.*?\\n.*?\\(\\s*(.*?)\\s*\\) minutes', '\\1') | first }}"
+
+- name: Add adjusted polling time to list
+  vars:
+    polling_time_adjusted: "{{ ((polling_time_text | int ) * (1 + polling_time_margin_error_percent)) | round(0, 'ceil') | int }}"
+  ansible.builtin.set_fact:
+    polling_time_list: "{{ polling_time_list + [polling_time_adjusted] }}"

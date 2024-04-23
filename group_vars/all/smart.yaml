@@ -1,0 +1,10 @@
+---
+polling_time_margin_error_percent: 0.1
+
+smart_test_types:
+  short:
+    poll_name: Short
+    test_name: short
+  long:
+    poll_name: Extended
+    test_name: long

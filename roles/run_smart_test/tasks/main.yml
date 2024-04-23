@@ -1,0 +1,33 @@
+---
+- name: Install smartmontools
+  become: true
+  ansible.builtin.apt:
+    name: smartmontools
+    state: present
+
+- name: Initialize polling_time_list
+  ansible.builtin.set_fact:
+    polling_time_list: []
+
+- name: Get polling time.
+  include_tasks: get_polling_time.yaml
+  loop: "{{ smart_disks }}"
+  loop_control:
+    label: "{{ disk.name }}"
+    loop_var: "disk"
+
+- name: "Run smart Test ({{ test }})"
+  vars:
+    test: "{{ test_type.test_name }}"
+  ansible.builtin.shell: "smartctl -t {{ test }} {{ disk.dev }}"
+  changed_when: false
+  loop: "{{ smart_disks }}"
+  loop_control:
+    label: "{{ disk.name }}"
+    loop_var: "disk"
+
+- name: Pause for polling time ({{ minutes }})
+  vars:
+    minutes: "{{ polling_time_list | max }}"
+  ansible.builtin.pause:
+    minutes: "{{ minutes }}"
