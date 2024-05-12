@@ -17,6 +17,20 @@
     replace: '# \1'
     backup: true
 
+- name: Check if /etc/apt/sources.list.d/ubuntu.sources exists
+  stat:
+    path: /etc/apt/sources.list.d/ubuntu.sources
+  register: ubuntu_sources_stat_results
+
+- name: Comment out default source (Ubuntu 24.04)
+  become: true
+  ansible.builtin.replace:
+    path: /etc/apt/sources.list.d/ubuntu.sources
+    regexp: "^([^#])"
+    replace: '# \1'
+    backup: true
+  when: ubuntu_sources_stat_results.stat.exists
+
 - name: Template Nexus source file
   become: true
   vars:
