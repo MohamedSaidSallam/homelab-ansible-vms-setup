@@ -67,6 +67,11 @@
 
 - name: Confirm apt config is valid
   become: true
-  ansible.builtin.apt:
-    update_cache: yes
+  shell: apt update
   changed_when: false
+  register: apt_update_results
+
+- name: Fail if proxy ({{ proxy_url }}) is not showing up in apt update stdout
+  ansible.builtin.fail:
+    msg: "proxy ({{ proxy_url }}) is not showing up in apt update stdout"
+  when: proxy_url not in apt_update_results.stdout
