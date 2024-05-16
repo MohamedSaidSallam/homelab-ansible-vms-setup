@@ -1,0 +1,53 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  name: kubernetes-dashboard
+  namespace: kube-system
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: stellara.homelab.mohamedsaidsallam.work
+    http:
+      paths:
+      - backend:
+          service:
+            name: kubernetes-dashboard
+            port:
+              number: 443
+        path: /
+        pathType: ImplementationSpecific
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: admin-user-kubernetes-dashboard
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-user-kubernetes-dashboard
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: admin-user-kubernetes-dashboard
+  namespace: kube-system
+---
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!! Warning: The sample user created in the tutorial will have administrative privileges and is for educational purposes only. !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# kubectl get secret admin-user-kubernetes-dashboard -n kube-system -o jsonpath={".data.token"} | base64 -d
+apiVersion: v1
+kind: Secret
+metadata:
+  name: admin-user-kubernetes-dashboard
+  namespace: kube-system
+  annotations:
+    kubernetes.io/service-account.name: "admin-user-kubernetes-dashboard"
+type: kubernetes.io/service-account-token

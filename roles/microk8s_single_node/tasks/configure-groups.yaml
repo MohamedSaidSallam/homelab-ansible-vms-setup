@@ -1,0 +1,79 @@
+---
+- name: add users to microk8s group
+  become: true
+  ansible.builtin.user:
+    name: "{{ item }}"
+    state: present
+    append: true
+    groups: microk8s
+  register: users_results
+  loop: "{{ microk8s_users }}"
+  loop_control:
+    label: "{{ item }}"
+
+- name: Transform user_homes into a dictionary
+  set_fact:
+    user_info_dict: "{{ user_info_dict | default({}) | combine({item['name']: item}) }}"
+  loop: "{{ users_results.results }}"
+  loop_control:
+    label: "{{ item['name'] }}"
+
+- name: Create .kube folder for the user
+  become: true
+  become_user: "{{ user }}"
+  ansible.builtin.file:
+    path: "{{ user_info_dict[user]['home'] }}/.kube"
+    state: directory
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: 0750
+  with_items: "{{ microk8s_users }}"
+  loop_control:
+    loop_var: user
+    label: "{{ user }}"
+
+- name: Check for kube config
+  ansible.builtin.stat:
+    path: "{{ user_info_dict[user]['home'] }}/.kube/config"
+  register: kube_config_stat_results
+  with_items: "{{ microk8s_users }}"
+  loop_control:
+    loop_var: user
+    label: "{{ user }}"
+
+- name: Create kubectl config
+  become: yes
+  changed_when: true
+  vars:
+    path: "{{ item.invocation.module_args.path }}"
+  ansible.builtin.shell: microk8s config > {{ path }}
+  args:
+    executable: /bin/bash
+  with_items: "{{ kube_config_stat_results.results }}"
+  loop_control:
+    label: "{{ path }}"
+  when: (not item.stat.exists) or (item.stat.exists and microk8s_overwrite_present_kube_config)
+
+- name: Set permission on kube directory
+  become: yes
+  file:
+    path: "{{ user_info_dict[user]['home'] }}/.kube"
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: 0750
+  with_items: "{{ microk8s_users }}"
+  loop_control:
+    loop_var: user
+    label: "{{ user }}"
+
+- name: Set permission on kube config
+  become: yes
+  file:
+    path: "{{ user_info_dict[user]['home'] }}/.kube/config"
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: 0750
+  with_items: "{{ microk8s_users }}"
+  loop_control:
+    loop_var: user
+    label: "{{ user }}"

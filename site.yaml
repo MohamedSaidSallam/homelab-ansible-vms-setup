@@ -4,3 +4,4 @@
 - ansible.builtin.import_playbook: setup-podman.yaml
 - ansible.builtin.import_playbook: setup-jellyfin.yaml
 - ansible.builtin.import_playbook: setup-syncthing.yaml
+- ansible.builtin.import_playbook: setup-microk8s_single_node.yaml

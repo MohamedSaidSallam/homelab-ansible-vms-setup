@@ -1,0 +1,51 @@
+---
+- name: Install snapd
+  become: true
+  ansible.builtin.package:
+    name:
+      - snapd
+    state: latest
+
+- name: Install microk8s using snap
+  become: true
+  community.general.snap:
+    name: microk8s
+    classic: true
+    channel: "{{ microk8s_version }}"
+
+- name: Wait for microk8s to be ready
+  become: true
+  ansible.builtin.command: "microk8s.status --wait-ready"
+  changed_when: false
+  register: microk8s_status_results
+  failed_when:
+      - "'This MicroK8s deployment is acting as a node in a cluster.' not in microk8s_status_results.stdout_lines"
+      - microk8s_status_results.rc > 0
+
+- name: Create microk8s aliases
+  become: true
+  community.general.snap_alias:
+    name: "{{ item.name }}"
+    aliases: "{{ item.aliases }}"
+    state: present
+  loop:
+    - name: microk8s.kubectl
+      aliases:
+        - kubectl
+    - name: microk8s.helm3
+      aliases:
+        - helm
+  loop_control:
+    label: "{{ item.name }}"
+  changed_when: false
+
+- name: Get snap microk8s hold status
+  become: true
+  ansible.builtin.shell: snap list microk8s
+  register: microk8s_snap_hold_results
+  changed_when: false
+
+- name: Set snap autoupdate
+  become: true
+  ansible.builtin.shell: snap refresh --{{ 'hold' if microk8s_disable_snap_autoupdate else 'unhold' }} microk8s
+  changed_when: (microk8s_disable_snap_autoupdate and 'held' not in microk8s_snap_hold_results.stdout) or (not microk8s_disable_snap_autoupdate and 'held' in microk8s_snap_hold_results.stdout)

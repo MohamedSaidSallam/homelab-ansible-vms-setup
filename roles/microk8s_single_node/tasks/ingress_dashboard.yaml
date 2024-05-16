@@ -1,0 +1,10 @@
+---
+- name: Setup ingress for Metallb for Ingress
+  ansible.builtin.shell: "echo '{{ lookup('file', 'metallb-ingress.yaml') }}' | kubectl apply -f -"
+  register: kubectl_apply_register
+  changed_when: "'configured' in kubectl_apply_register.stdout or 'created' in kubectl_apply_register.stdout"
+
+- name: Setup ingress for Kubernetes Dashboard
+  ansible.builtin.shell: "echo '{{ lookup('file', 'dashboard-ingress.yaml') }}' | kubectl apply -f -"
+  register: kubectl_apply_register
+  changed_when: "'configured' in kubectl_apply_register.stdout or 'created' in kubectl_apply_register.stdout"

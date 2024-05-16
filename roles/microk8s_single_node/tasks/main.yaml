@@ -1,0 +1,23 @@
+---
+# Credits: https://github.com/istvano/ansible_role_microk8s
+
+- name: Install microk8s
+  import_tasks: install.yaml
+
+- name: Gather User facts
+  ansible.builtin.setup:
+    gather_subset:
+      - 'user_id'
+
+- name: Configure microk8s users
+  include_tasks: configure-groups.yaml
+  when: "microk8s_users is defined and microk8s_users not in ([], None, '', omit)"
+
+- name: Configure microk8s single node addons
+  include_tasks: addons.yaml
+
+- name: Setup kubectl alias
+  include_tasks: alias.yaml
+
+- name: Setup ingress and dashboard
+  include_tasks: ingress_dashboard.yaml

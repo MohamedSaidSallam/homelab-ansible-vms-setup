@@ -1,0 +1,30 @@
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: ingress-addresspool
+  namespace: metallb-system
+spec:
+  addresses:
+  - 192.168.1.120/32 # ! should be a variable :)
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ingress
+  namespace: ingress
+  annotations:
+    metallb.universe.tf/address-pool: ingress-addresspool
+spec:
+  selector:
+    name: nginx-ingress-microk8s
+  type: LoadBalancer
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 443

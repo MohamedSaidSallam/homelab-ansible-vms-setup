@@ -1,0 +1,7 @@
+---
+- name: Setup MicroK8s Single Node
+  hosts: microk8s_single_node
+  become: false
+  gather_facts: false
+  roles:
+    - role: microk8s_single_node

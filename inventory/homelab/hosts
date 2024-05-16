@@ -4,9 +4,13 @@ proxmox
 [vms:children]
 jellyfin
 support
+stellara
 
 [support]
 syranth
+
+[stellara]
+stellara_vm
 
 [jellyfin]
 jellyfin_vm
@@ -20,3 +24,6 @@ jellyfin
 
 [syncthing:children]
 support
+
+[microk8s_single_node:children]
+stellara

@@ -1,0 +1,16 @@
+---
+- name: Install bash-completion
+  become: true
+  ansible.builtin.package:
+    name:
+      - bash-completion
+    state: present
+
+- name: Setup k alias for kubectl and autocomplete
+  ansible.builtin.blockinfile:
+    path: ~/.bashrc
+    block: |
+      source /etc/bash_completion
+      source <(kubectl completion bash)
+      alias k=kubectl
+      complete -o default -F __start_kubectl k
