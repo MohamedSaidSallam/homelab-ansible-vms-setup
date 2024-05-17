@@ -5,7 +5,7 @@
       - 'user_id'
       - 'user_gid'
 
-- name: Run container
+- name: Run Jellyfin container
   containers.podman.podman_container:
     name: "{{ jellyfin_container_name }}"
     image: "{{ docker_private_registry }}/jellyfin/jellyfin:latest"

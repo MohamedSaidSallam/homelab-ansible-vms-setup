@@ -1,16 +1,34 @@
 ---
+- name: Install cron
+  become: true
+  ansible.builtin.package:
+    name:
+      - cron
+    state: present
+
 - name: Create SMB mount point
   become: true
   ansible.builtin.file:
     state: directory
     path: "{{ smb_mnt_path }}"
 
-- name: Mount SMB
+- name: Template smb.mount.j2 to {{ smb_unit_name }}
   become: true
-  ansible.posix.mount:
-    path: "{{ smb_mnt_path }}"
-    src: "{{ smb_url }}"
-    fstype: cifs
-    opts: "ro,nofail,username={{ smb_username }},password={{ smb_password }}"
-    state: mounted
-    backup: true
+  ansible.builtin.template:
+    src: smb.mount.j2
+    dest: "/etc/systemd/system/{{ smb_unit_name }}"
+  register: template_mount_unit_results
+
+- name: daemon_reload, enable, and start {{ smb_unit_name }} service. Restart if necessary.
+  become: true
+  ansible.builtin.systemd_service:
+    state: "{{ 'restarted' if template_mount_unit_results.changed else 'started' }}"
+    name: "{{ smb_unit_name }}"
+    enabled: true
+    daemon_reload: true
+
+- name: Add cronjob for "Ensure {{ smb_unit_name }} is running"
+  ansible.builtin.cron:
+    name: "Ensure {{ smb_unit_name }} is running"
+    minute: "*"
+    job: "(systemctl is-active --quiet \"{{ smb_unit_name }}\" || sudo systemctl start \"{{ smb_unit_name }}\") > ~/mount_cron.log 2>&1"

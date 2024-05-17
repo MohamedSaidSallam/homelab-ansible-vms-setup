@@ -1,2 +1,5 @@
 ---
-# vars file for mount_smb
+smb_fs_type: cifs
+
+# string escaping for mount unit files: https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html#String%20Escaping%20for%20Inclusion%20in%20Unit%20Names
+smb_unit_name: "{{ smb_mnt_path[1:] | replace('-','\\x2d') | replace('/','-') }}.mount"

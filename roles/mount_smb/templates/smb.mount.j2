@@ -1,0 +1,11 @@
+[Unit]
+Description=SMB mount
+
+[Mount]
+What={{ smb_url }}
+Where={{ smb_mnt_path }}
+Type={{ smb_fs_type }}
+Options=ro,nofail,username={{ smb_username }},password={{ smb_password }}
+
+[Install]
+WantedBy=multi-user.target
